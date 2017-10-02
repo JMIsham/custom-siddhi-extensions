@@ -28,7 +28,7 @@ import org.wso2.siddhi.core.stream.input.InputHandler;
 import org.wso2.siddhi.core.stream.output.StreamCallback;
 import org.wso2.siddhi.core.util.EventPrinter;
 
-public class TableRowAttributeAggregatorTestCase {
+public class HTMLTableAggregatorTestCase {
     private static final Logger log = Logger.getLogger(TableRowAttributeAggregatorTestCase.class);
     private volatile int count;
 
@@ -39,7 +39,7 @@ public class TableRowAttributeAggregatorTestCase {
 
     @Test
     public void tableRowMultiAttributeTest() throws InterruptedException {
-        log.info("Table Row Attribute Aggregator TestCase - Multi");
+        log.info("HTML Table Aggregator TestCase - Multi");
         SiddhiManager siddhiManager = new SiddhiManager();
 
         String inStreamDefinition = "" +
@@ -47,7 +47,7 @@ public class TableRowAttributeAggregatorTestCase {
 
         String query = "" +
                 "@info(name = 'query1') " +
-                "from inputStream#window.lengthBatch(3) " +
+                "from inputStream#window.time(2 sec) " +
                 "select id, html:toTable(id, timestamp, value) as rowString " +
                 "insert into outputStream; ";
 
@@ -65,19 +65,23 @@ public class TableRowAttributeAggregatorTestCase {
         InputHandler inputHandler = executionPlanRuntime.getInputHandler("inputStream");
         executionPlanRuntime.start();
         inputHandler.send(new Object[]{1, 1470732420000L, 0});
+        Thread.sleep(1000);
         inputHandler.send(new Object[]{2, 1470732423000L, 86});
+        Thread.sleep(1000);
         inputHandler.send(new Object[]{3, 1470732424000L, 87});
+        Thread.sleep(1000);
         inputHandler.send(new Object[]{4, 1470732425000L, 88});
         inputHandler.send(new Object[]{5, 1470732426000L, 84});
+        Thread.sleep(3000);
         inputHandler.send(new Object[]{6, 1470732427000L, 0});
         Thread.sleep(1000);
         executionPlanRuntime.shutdown();
-        Assert.assertEquals("Event count", 2, count);
+        Assert.assertEquals("Event count", 6, count);
     }
 
     @Test
     public void tableRowSingleAttributeTest() throws InterruptedException {
-        log.info("Table Row Attribute Aggregator TestCase - Single");
+        log.info("HTML Table Aggregator TestCase  - Single");
         SiddhiManager siddhiManager = new SiddhiManager();
 
         String inStreamDefinition = "" +
@@ -85,8 +89,8 @@ public class TableRowAttributeAggregatorTestCase {
 
         String query = "" +
                 "@info(name = 'query1') " +
-                "from inputStream#window.lengthBatch(3) " +
-                "select id, custom:toTableRow(value) as rowString " +
+                "from inputStream#window.time(2 sec) " +
+                "select id, html:toTable(value) as rowString " +
                 "insert into outputStream; ";
 
         ExecutionPlanRuntime executionPlanRuntime = siddhiManager.createExecutionPlanRuntime(inStreamDefinition + query);
@@ -103,13 +107,17 @@ public class TableRowAttributeAggregatorTestCase {
         InputHandler inputHandler = executionPlanRuntime.getInputHandler("inputStream");
         executionPlanRuntime.start();
         inputHandler.send(new Object[]{1, 1470732420000L, 0});
+        Thread.sleep(1000);
         inputHandler.send(new Object[]{2, 1470732423000L, 86});
+        Thread.sleep(1000);
         inputHandler.send(new Object[]{3, 1470732424000L, 87});
+        Thread.sleep(1000);
         inputHandler.send(new Object[]{4, 1470732425000L, 88});
         inputHandler.send(new Object[]{5, 1470732426000L, 84});
+        Thread.sleep(3000);
         inputHandler.send(new Object[]{6, 1470732427000L, 0});
         Thread.sleep(1000);
         executionPlanRuntime.shutdown();
-        Assert.assertEquals("Event count", 2, count);
+        Assert.assertEquals("Event count", 6, count);
     }
 }

@@ -15,4 +15,4 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-toTableRow=org.wso2.siddhi.extension.custom.TableRowAttributeAggregator,
+toTable=org.wso2.siddhi.extension.custom.HTMLTableAggregator
